@@ -118,7 +118,6 @@ El timer no corta la partida. Solo afecta el score al cerrar la stage.
 | --- | --- |
 | Condición | El path de un slide del jugador incluye la celda de un NPC |
 | Efecto | El NPC muere, suena un squash y queda un charco en el piso |
-| Tono | Cartoon oscuro, sin gore realista |
 
 ### 5.7 Recolectables
 
