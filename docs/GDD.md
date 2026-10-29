@@ -7,66 +7,59 @@
 | Campo | Contenido |
 | --- | --- |
 | Título | Lost In The Dungeon |
-| Género | Puzzle de memoria |
+| Género | Caza en laberinto, top-down |
 | Plataforma | PC (Godot 4) |
 | Vista | Top-down 2D |
 | Motor | Godot 4.x |
 | Estudiante | Exequiel Baldini |
-| Curso / materia | PROGRAMACION DE VIDEOJUEGOS III |
-| Fecha | `[12/10/26]` |
-| Versión del GDD | 0.1 |
+| Fecha | 28/10/26 |
+| Versión del GDD | 0.3 |
 
 ---
 
 ## 2. Pitch / concepto
 
-### Elevator pitch (1–2 oraciones)
+### Elevator pitch
 
-Antes de cada laberinto el jugador ve el mapa iluminado unos segundos con cámara lejana; luego la cámara baja al personaje, todo se oscurece y solo queda la luz de un orbe mágico con tiempo limitado. Hay que recordar el camino, llegar a la salida, sumar puntaje y decidir si terminar la run con el puntaje actual o arriesgar otro laberinto más grande y perder la partida.
+Sos un fantasma en una mazmorra oscura. NPCs intentan fugarse por las salidas del laberinto. Te deslizás por los pasillos, los aplastás al cruzar su celda y sumás score antes de que escapen. Cada stage termina cuando no queda ningún NPC dentro del maze. La run dura 10 stages.
 
-### Referencias / inspiración
+### Fantasía
+
+| Rol | Quién es |
+| --- | --- |
+| Jugador | Fantasma |
+| Enemigos | NPCs |
+| Escenario | Mazmorra procedural oscura |
+
+### Referencias
 
 | Referencia | Qué tomamos |
 | --- | --- |
-| Dont Starve Together | Ambientacion |
-| Memory / dark exploration | Ver mapa → jugar a ciegas con luz limitada |
-| Roguelike / risk-reward | Seguir o plantarse con el score |
+| Monaco | Lectura del nivel por focos de luz en oscuridad |
+| Pac-Man | Cazar objetivos que se mueven por un laberinto |
 
 ---
 
-## 3. Objetivos del proyecto (curso)
+## 3. Alcance MVP
 
-### Requisitos que debe cumplir
-
-| Requisito | Cómo lo cubre este juego | Estado |
-| --- | --- | --- |
-| Top-down 2D | Vista cenital, movimiento en 8 direcciones |
-| Niveles / escenarios / pantallas | Varios laberintos (stages), menú, pantalla de decisión, game over |
-| Personaje controlable | Player con movimiento |
-| ≥ 2 acciones además del movimiento | 1) Apagar/encender orbe 2) Tirar orbe |
-
-### Alcance (scope)
-
-**MVP**
-
-- Generación + preview iluminado + oscuridad + luz del orbe
-- Movimiento + apagar orbe + tirar orbe
-- Llegar a la salida → score → opción de seguir o quedarse
-- Escalado de tamaño por stage
+- Laberinto procedural, preview corto, oscuridad con luces del fantasma y de los NPCs
+- Movimiento por slide, Acción 1, Acción 2
+- NPCs que pathfindean a la salida, squash, dulces, murciélago
+- 10 stages, score por stage y best score al final
 
 ---
 
 ## 4. Loop de juego
 
-### Loop principal 
+1. Empieza la stage (laberinto nuevo según el número de stage).
+2. Preview: mapa iluminado durante 3 segundos.
+3. El nivel queda oscuro. Arranca el timer ascendente.
+4. Los NPCs caminan hacia la salida más cercana. El jugador caza.
+5. La stage termina cuando no queda ningún NPC dentro del laberinto (muertos o escapados).
+6. Se calcula el score de la stage y se muestra un resumen breve.
+7. Si el stage es menor a 10, sigue la siguiente stage. Si es 10, pantalla final con score de la run y best score.
 
-1. Empieza un stage (laberinto nuevo).
-2. **Preview:** mapa iluminado, cámara lejos, dura 5 segundos.
-3. Cámara hace zoom al jugador; el nivel queda oscuro.
-4. El jugador navega con luz limitada (orbe).
-5. Si se queda sin “energía” de luz / tiempo → el jugador queda a oscuras con apenas visibilidad y si es incapaz de encontrar la salida 30s despues de que la luz se pierde la run se acaba.
-6. Si llega a la salida → suma score, recupera algo de energía del orbe.
-7. plantarse y guardar score o seguir al siguiente stage (más grande / más difícil).
+El timer no corta la partida. Solo afecta el score al cerrar la stage.
 
 ---
 
@@ -76,51 +69,73 @@ Antes de cada laberinto el jugador ve el mapa iluminado unos segundos con cámar
 
 | Campo | Contenido |
 | --- | --- |
-| Tipo | Top-down, CharacterBody2D |
-| Direcciones | 8 Direcciones |
-| Controles | WASD / flechas |
-| Colisión | Paredes del TileMap |
+| Tipo | Deslizamiento en línea recta hasta el próximo nodo |
+| Nodo | Esquina, cruce o callejón sin salida |
+| Controles | WASD / flechas (un toque por dirección) |
+| Durante el slide | Se puede bufferizar la próxima dirección |
+| Colisión | Solo celdas de piso del grid del laberinto |
 
-### 5.2 Orbe mágico (fuente de luz)
-
-| Campo | Contenido |
-| --- | --- |
-| Qué es | Orbe que ilumina alrededor del jugador |
-| Recurso | Tiempo / energía que se consume mientras está activo |
-| Al completar un laberinto | Se recupera una cantidad de energía |
-
-### 5.3 Acciones del jugador
-
-#### Acción A — Apagar / encender el orbe
+### 5.2 Visión
 
 | Campo | Contenido |
 | --- | --- |
-| Efecto | Sin luz (o luz mínima); la energía se consume menos |
-| Riesgo | Navegar casi a ciegas; depende de la memoria del preview |
+| Base | Canvas oscuro |
+| Jugador | PointLight2D propia |
+| NPCs | La misma intensidad y radio de luz que el jugador |
+| Lectura | Siempre se ve cada NPC y un poco de maze a su alrededor |
 
-#### Acción B — Tirar el orbe
-
-| Campo | Contenido |
-| --- | --- |
-| Efecto | El orbe avanza unos metros iluminando el area hacia la posicion del mouse |
-| Riesgo | El jugador queda sin luz personal |
-
-### 5.4 Preview del mapa
+### 5.3 Acción 1 — Pulso de luz
 
 | Campo | Contenido |
 | --- | --- |
-| Duración base | Entre 5s ajustable con dificultad|
-| Qué se muestra | Laberinto completo iluminado; marca inicio y salida |
-| Cámara | Lejos → tween/zoom al player |
+| Efecto | Desde el jugador sale una onda que ilumina el mapa al pasar y luego vuelve la oscuridad |
+| Cooldown | 5 segundos |
+| UI | Indicador visual de carga y de lista. Sin nombre de skill en pantalla |
 
-### 5.5 Score y progresión
+### 5.4 Acción 2 — Teleport al NPC
 
 | Campo | Contenido |
 | --- | --- |
-| Puntos por laberinto | 15 puntos por laberinto multiplicado por numero de nivel actual mas cantidad de energia del orbe restante |
-| Retirarse | Guarda el score de la run |
-| Seguir | Stage +1, laberinto más grande, más riesgo |
-| Derrota | Se pierde la run la escore lograda se pierde y no se registra en tu high-score  |
+| Condición | Existe un NPC a 6 celdas o menos |
+| Efecto | El jugador aparece en la celda de ese NPC y lo elimina al instante |
+| Cooldown | 8 segundos |
+| UI | Indicador visual de carga y de lista. Sin nombre de skill en pantalla |
+| Si no hay objetivo en rango | La acción no se gasta |
+
+### 5.5 NPCs
+
+| Campo | Contenido |
+| --- | --- |
+| Cantidad por stage | 4 × número de stage |
+| Comportamiento | Pathfind a la salida más cercana, celda a celda, más lento que el slide del jugador |
+| Escape | Al entrar en una celda de salida, desaparecen y no suman kill |
+| Anti-camping | No avanzan a la celda ocupada por el jugador |
+| Luz | Igual a la del jugador |
+
+### 5.6 Squash
+
+| Campo | Contenido |
+| --- | --- |
+| Condición | El path de un slide del jugador incluye la celda de un NPC |
+| Efecto | El NPC muere, suena un squash y queda un charco en el piso |
+| Tono | Cartoon oscuro, sin gore realista |
+
+### 5.7 Recolectables
+
+#### Dulces
+
+| Campo | Contenido |
+| --- | --- |
+| Efecto | Al recogerlos restan 3 segundos al tiempo acumulado de la stage |
+| Score | 25 puntos por dulce recogido |
+
+#### Murciélago
+
+| Campo | Contenido |
+| --- | --- |
+| Cantidad | 1 por stage |
+| Efecto | Elimina al NPC vivo más cercano en cualquier parte del mapa |
+| Score | Cuenta como un kill normal |
 
 ---
 
@@ -128,47 +143,79 @@ Antes de cada laberinto el jugador ve el mapa iluminado unos segundos con cámar
 
 | Campo | Contenido |
 | --- | --- |
-| Enfoque | Laberinto procedural |
-| Algoritmo objetivo | Recursive backtracker (DFS + pila) |
+| Algoritmo base | Recursive backtracker |
+| Grid | 1 = muro, 0 = piso; pasillos de 1 tile |
+| Tamaño | 21 + (stage − 1) × 2, siempre impar |
+| Braids | Tras el backtracker se abren stage × 2 muros entre celdas de piso |
+| Salidas stages 1–5 | 1 |
+| Salidas stages 6–8 | 2 |
+| Salidas stages 9–10 | 3 |
+| Path de NPCs | Siempre hacia la salida más cercana |
+
+El jugador no gana la stage llegando a una salida. Las salidas son rutas de fuga de los NPCs.
 
 ---
 
-## 7. Pantallas
+## 7. Score y progresión
 
+### Score de una stage
 
-| Pantalla | Qué muestra | Notas |
-| --- | --- | --- |
-| Menú principal | Jugar / créditos / salir |
-| Gameplay | Laberinto + HUD (energía, stage, score) | |
-| Decisión post-nivel | Seguir o plantarse | |
-| Game over | score y highscore |
+```
+(kills × 100) + max(0, 180 − tiempo_segundos) × 5 + (dulces × 25)
+```
+
+| Término | Significado |
+| --- | --- |
+| kills | NPCs eliminados por slide, Acción 2 o murciélago |
+| tiempo_segundos | Tiempo ascendente al cerrar la stage, ya aplicado el descuento de dulces |
+| dulces | Cantidad de dulces recogidos en la stage |
+
+Los NPCs que escapan no suman kill.
+
+### Score de la run
+
+Suma de las 10 stages. Al terminar la run se compara con el best score guardado y se actualiza si es mayor.
 
 ---
 
-## 7. Arte y audio
+## 8. Pantallas
+
+| Pantalla | Qué muestra |
+| --- | --- |
+| Menú principal | Jugar, créditos, salir |
+| Gameplay | Laberinto, luces, HUD |
+| Resumen de stage | Kills, escapes, tiempo, score de la stage |
+| Pantalla final | Score de la run y best score |
+
+---
+
+## 9. Arte y audio
 
 ### Arte
 
 | Campo | Contenido |
 | --- | --- |
 | Estilo | Pixel art top-down, mazmorra oscura |
-| Resolución base del proyecto | 480×270 (viewport), ventana 1280×720 |
+| Assets base | Tileset de dungeon del proyecto |
+| Feedback de kill | Charco en el piso + SFX de squash |
+| Resolución | Viewport 480×270, ventana 1280×720 |
 
 ### Audio
 
 | Campo | Contenido |
 | --- | --- |
-| Música | Relajada con un toque medieval |
-| SFX | Sonidos de caminar, sumbido del orbe, apagado , encendido,finalizacion del nivel y clicks en UI|
+| Música | Ambiente de mazmorra con toque Halloween |
+| SFX | Whoosh de slide, squash, pulso de luz, teleport, pickup, clicks de UI |
 
 ---
 
-## 10. UI / HUD (en gameplay)
+## 10. UI / HUD (gameplay)
 
 | Elemento | Qué muestra |
-| --- | --- | --- |
-| Energía del orbe | Barra o timer | |
-| Stage actual | Número | |
-| Score de la run | Número | |
-
----
+| --- | --- |
+| Timer | Tiempo ascendente de la stage |
+| Stage | Número actual (1 a 10) |
+| Score de la run | Acumulado hasta el momento |
+| NPCs restantes | Cuántos siguen dentro del maze |
+| Acción 1 | Indicador de carga / lista |
+| Acción 2 | Indicador de carga / lista |
