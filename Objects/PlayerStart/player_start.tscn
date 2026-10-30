@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bgnmg4cjbc858"]
+
+[ext_resource type="Script" uid="uid://bkhuguqfja38" path="res://Objects/PlayerStart/Script/player_start.gd" id="1_alkim"]
+
+[node name="PlayerStart" type="Marker2D"]
+script = ExtResource("1_alkim")

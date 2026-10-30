@@ -23,3 +23,6 @@ mono_crash.*.json
 *.exe
 # Uncomment if your project does not version PCK files as runtime dependencies.
 # *.pck
+
+# Local implementation checklist (not part of course deliverable docs)
+docs/BUILD_PLAN.md
