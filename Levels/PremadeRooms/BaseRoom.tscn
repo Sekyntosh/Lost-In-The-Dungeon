@@ -278,19 +278,6 @@ sources/2 = SubResource("TileSetAtlasSource_ixhp4")
 
 [node name="BaseRoom" type="Node2D" unique_id=984166774]
 script = ExtResource("1_j2eqy")
-source_id = null
-scenes_id = null
-simple_wall = null
-player_spawn_point = null
-top_left_corner_tile = null
-top_right_corner_tile = null
-bottom_left_corner_tile = null
-bottom_right_corner_tile = null
-corridor_tile_horizontal_top = null
-corridor_tile_horizontal_bottom = null
-corridor_tile_vertical_left = null
-corridor_tile_vertical_right = null
-stage = null
 
 [node name="LaberinthBody" type="TileMapLayer" parent="." unique_id=1472713961]
 tile_set = SubResource("TileSet_biqq7")

@@ -1,29 +1,17 @@
 extends Node2D
 
-@export var source_id = 2
-@export var scenes_id = 0
+@export var source_id: int = 2
+@export var scenes_id: int = 0
+@export var wall_tile: Vector2i = Vector2i(0, 3)
+@export var floor_tile: Vector2i = Vector2i(1, 1)
 @export var player_spawn_point: PackedScene = preload("res://Objects/PlayerStart/player_start.tscn")
-
-@export var top_left_corner_tile: Vector2i = Vector2i(0, 0)
-@export var top_right_corner_tile: Vector2i = Vector2i(5, 0)
-@export var bottom_left_corner_tile: Vector2i = Vector2i(0, 4)
-@export var bottom_right_corner_tile: Vector2i = Vector2i(5, 4)
-@export var corridor_tile_horizontal_top: Vector2i = Vector2i(1, 0)
-@export var corridor_tile_horizontal_bottom: Vector2i = Vector2i(1, 4)
-@export var corridor_tile_vertical_left: Vector2i = Vector2i(0, 3)
-@export var corridor_tile_vertical_right: Vector2i = Vector2i(5, 3)
-
-
-
-## Each logical grid cell is painted as a PAINT_SCALE x PAINT_SCALE tile block.
-const PAINT_SCALE: int = 2
+@export var stage: int = 1
 
 var grid = []
-
 var map_size = Vector2i.ZERO
 ## Room cell where the backtracker started (useful for player spawn later).
 var start_cell: Vector2i = Vector2i.ZERO
-@export var stage: int = 1
+
 
 func _ready() -> void:
 	add_to_group("maze")
@@ -64,29 +52,27 @@ func is_node(cell: Vector2i) -> bool:
 	return neighbors[0] + neighbors[1] != Vector2i.ZERO
 
 
-func _logical_cell_size() -> Vector2:
-	return tile_size() * float(PAINT_SCALE)
-
-
 func cell_to_world(cell: Vector2i) -> Vector2:
-	var block := _logical_cell_size()
-	return to_global(Vector2(cell) * block + block * 0.5)
+	var ts := tile_size()
+	return to_global(Vector2(cell) * ts + ts * 0.5)
 
 
 func world_to_cell(pos: Vector2) -> Vector2i:
 	var local := to_local(pos)
-	var block := _logical_cell_size()
-	return Vector2i(floori(local.x / block.x), floori(local.y / block.y))
+	var ts := tile_size()
+	return Vector2i(floori(local.x / ts.x), floori(local.y / ts.y))
+
 
 func make_grid(width: int, height: int, fill_value: int) -> Array:
-	var grid: Array = []
+	var new_grid: Array = []
 	for y in height:
 		var row: Array = []
 		for x in width:
 			row.append(fill_value)
-		grid.append(row)
-	return grid
-	
+		new_grid.append(row)
+	return new_grid
+
+
 func build_room() -> void:
 	# Base 21 so stage 1 is already a real maze; +2 per stage keeps size odd.
 	var laberinth_size := 21 + (stage - 1) * 2
@@ -101,14 +87,11 @@ func convert_grid_to_tiles() -> void:
 	$LaberinthBody.clear()
 	for y in grid.size():
 		for x in grid[y].size():
-			var base := Vector2i(x, y) * PAINT_SCALE
-			for oy in PAINT_SCALE:
-				for ox in PAINT_SCALE:
-					var paint_cell := base + Vector2i(ox, oy)
-					if grid[y][x] == 1:
-						$LaberinthBody.set_cell(paint_cell, source_id, simple_wall)
-					else:
-						$LaberinthBody.erase_cell(paint_cell)
+			var cell := Vector2i(x, y)
+			if grid[y][x] == 1:
+				$LaberinthBody.set_cell(cell, source_id, wall_tile)
+			else:
+				$LaberinthBody.set_cell(cell, source_id, floor_tile)
 
 
 ## Recursive-backtracker
@@ -164,12 +147,11 @@ func carve_maze() -> void:
 func fit_camera_to_room() -> void:
 	var camera: Camera2D = $Camera2D
 	var used_space = $LaberinthBody.get_used_rect()
-	var tile_size = $LaberinthBody.tile_set.tile_size
-	var size_px := Vector2(used_space.size) * Vector2(tile_size)
+	var layer_tile_size = $LaberinthBody.tile_set.tile_size
+	var size_px := Vector2(used_space.size) * Vector2(layer_tile_size)
 	var view := get_viewport().get_visible_rect().size
 	var z := minf(view.x / size_px.x, view.y / size_px.y) * 0.9
 	camera.zoom = Vector2(z, z)
-
 	camera.position = size_px * 0.5
 
 
