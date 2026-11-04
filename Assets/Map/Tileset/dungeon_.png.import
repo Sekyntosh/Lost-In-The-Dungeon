@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvhwdvolmbo5m"
-path="res://.godot/imported/16x16 Interact-Sheet.png-6407a14db650e7c581888a1e8e9874cb.ctex"
+uid="uid://b15ccb2uobqgx"
+path="res://.godot/imported/dungeon_.png-a4374d1e0ab58204d7e9007143dd0537.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Objects/Player/Assets/16x16 Interact-Sheet.png"
-dest_files=["res://.godot/imported/16x16 Interact-Sheet.png-6407a14db650e7c581888a1e8e9874cb.ctex"]
+source_file="res://Assets/Map/Tileset/dungeon_.png"
+dest_files=["res://.godot/imported/dungeon_.png-a4374d1e0ab58204d7e9007143dd0537.ctex"]
 
 [params]
 

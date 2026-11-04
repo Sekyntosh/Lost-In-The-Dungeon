@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c13wuxfa7p0w1"
-path="res://.godot/imported/16x16 Walk-Sheet.png-0ef09f4e7bea2ee2adfc22bd4980dcc0.ctex"
+uid="uid://dltbapo0l2mnt"
+path="res://.godot/imported/Dungeon_Tileset.png-8c61ff036510f32ca059b263f8cd6dca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Objects/Player/Assets/16x16 Walk-Sheet.png"
-dest_files=["res://.godot/imported/16x16 Walk-Sheet.png-0ef09f4e7bea2ee2adfc22bd4980dcc0.ctex"]
+source_file="res://Assets/Map/Tileset/Dungeon_Tileset.png"
+dest_files=["res://.godot/imported/Dungeon_Tileset.png-8c61ff036510f32ca059b263f8cd6dca.ctex"]
 
 [params]
 

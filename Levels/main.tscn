@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://tjwc2ialoiq4"]
 
-[ext_resource type="PackedScene" uid="uid://cy0e30biuey4w" path="res://Levels/PremadeRooms/BaseRoom.tscn" id="2_gnif3"]
+[ext_resource type="PackedScene" uid="uid://cy0e30biuey4w" path="res://Levels/LaberinthGenerator/BaseRoom.tscn" id="2_gnif3"]
 
 [node name="MainLevel" type="Node" unique_id=1778689370]
 

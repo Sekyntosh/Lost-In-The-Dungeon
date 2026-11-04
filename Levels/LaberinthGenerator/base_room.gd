@@ -1,10 +1,11 @@
 extends Node2D
 
 @export var source_id: int = 2
+@export var source_id_2: int = 1
 @export var scenes_id: int = 0
 @export var wall_tile: Vector2i = Vector2i(0, 3)
 @export var floor_tile: Vector2i = Vector2i(1, 1)
-@export var player_spawn_point: PackedScene = preload("res://Objects/PlayerStart/player_start.tscn")
+@export var player_spawn_point: PackedScene = preload("res://Core/PlayerStart/player_start.tscn")
 @export var stage: int = 1
 
 var grid = []
@@ -89,13 +90,12 @@ func convert_grid_to_tiles() -> void:
 		for x in grid[y].size():
 			var cell := Vector2i(x, y)
 			if grid[y][x] == 1:
-				$LaberinthBody.set_cell(cell, source_id, wall_tile)
+				$LaberinthBody.set_cell(cell, source_id_2, wall_tile)
 			else:
 				$LaberinthBody.set_cell(cell, source_id, floor_tile)
 
 
-## Recursive-backtracker
-## grid: 1 = wall, 0 = floor.
+
 func carve_maze() -> void:
 	var height: int = grid.size()
 	if height == 0:
@@ -153,7 +153,15 @@ func fit_camera_to_room() -> void:
 	var z := minf(view.x / size_px.x, view.y / size_px.y) * 0.9
 	camera.zoom = Vector2(z, z)
 	camera.position = size_px * 0.5
-
+	
+	
+func fit_background_to_room() -> void:
+	var background: Sprite2D = $Background_fill
+	var used_space = $LaberinthBody.get_used_rect()
+	var layer_tile_size = $LaberinthBody.tile_set.tile_size
+	var size_px := Vector2(used_space.size) * Vector2(layer_tile_size)
+	background.position = size_px * 0.5
+	background.scale = Vector2(1, 1)
 
 func set_player_spawn_point() -> void:
 	var player_spawn_point_instance: Marker2D = player_spawn_point.instantiate()
