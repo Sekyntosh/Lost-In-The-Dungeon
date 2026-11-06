@@ -9,6 +9,7 @@ var _buffered_dir: Vector2i = Vector2i.ZERO
 
 func _ready() -> void:
 	call_deferred("_setup")
+	add_to_group("player")
 
 
 func _setup() -> void:

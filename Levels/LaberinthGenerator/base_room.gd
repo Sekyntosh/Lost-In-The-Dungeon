@@ -6,6 +6,7 @@ extends Node2D
 @export var wall_tile: Vector2i = Vector2i(0, 3)
 @export var floor_tile: Vector2i = Vector2i(1, 1)
 @export var player_spawn_point: PackedScene = preload("res://Core/PlayerStart/player_start.tscn")
+@export var level_end: PackedScene = preload("res://Core/LevelEnd/PlayerEnd.tscn")
 @export var stage: int = 1
 
 var grid = []
@@ -13,12 +14,16 @@ var map_size = Vector2i.ZERO
 ## Room cell where the backtracker started (useful for player spawn later).
 var start_cell: Vector2i = Vector2i.ZERO
 
+## An end cell picked randomly
+var end_cell: Vector2i = Vector2i.ZERO
+
 
 func _ready() -> void:
 	add_to_group("maze")
 	build_room()
 	fit_camera_to_room()
 	set_player_spawn_point()
+	set_level_end()
 
 
 func tile_size() -> Vector2:
@@ -118,7 +123,15 @@ func carve_maze() -> void:
 		Vector2i(1, height - 2),
 		Vector2i(width - 2, height - 2),
 	]
+	#pick start cell
 	start_cell = corners[randi() % corners.size()]
+	#pick end cell
+	end_cell = corners[randi() % corners.size()]
+	
+	if end_cell == start_cell:
+		end_cell = corners[randi() % corners.size()]
+		print_debug("cells matched, re-rolling! :D")
+	
 	grid[start_cell.y][start_cell.x] = 0
 	var stack: Array[Vector2i] = [start_cell]
 
@@ -168,3 +181,15 @@ func set_player_spawn_point() -> void:
 	add_child(player_spawn_point_instance)
 	player_spawn_point_instance.global_position = cell_to_world(start_cell)
 	player_spawn_point_instance.spawn_player()
+	
+func set_level_end() -> void:
+	var existing := get_tree().get_first_node_in_group("level_end") as Area2D
+	if existing != null:
+		existing.global_position = cell_to_world(end_cell)
+		return
+		
+	var level_end_area: Area2D = level_end.instantiate()
+	level_end_area.add_to_group("level_end")
+	add_child(level_end_area)
+	level_end_area.global_position = cell_to_world(end_cell)
+	

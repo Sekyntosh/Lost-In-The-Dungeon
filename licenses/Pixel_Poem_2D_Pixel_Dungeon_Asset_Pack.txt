@@ -1,0 +1,17 @@
+Asset used in this project
+--------------------------
+Assets/Map/Tileset/Dungeon_Tileset.png
+
+Source
+------
+Pack:   2D Pixel Dungeon Asset Pack v2.0
+Author: Pixel_Poem
+URL:    https://pixel-poem.itch.io/dungeon-assetpuck
+
+License (from the itch.io page)
+-------------------------------
+This asset pack can be used in free and commercial projects.
+You can modify it to suit your own needs.
+
+Credit is not necessary, but appreciated.
+You may not redistribute it or resell it.

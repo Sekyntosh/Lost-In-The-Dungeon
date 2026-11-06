@@ -1,0 +1,22 @@
+Asset used in this project
+--------------------------
+Assets/Map/Tileset/dungeon_.png
+  (exact file from midground_/dungeon_.png in the pack below)
+
+Source
+------
+Pack:   fourSeasonsPlatformer_ [tileset, version 2.0]
+Author: Kevin's Mom's House
+URL:    https://kevins-moms-house.itch.io/four-seasons-platformer-tileset
+Contact listed in pack: analogstudios.inc@gmail.com
+
+License (from the itch.io page)
+-------------------------------
+Creative Commons Zero v1.0 Universal (CC0)
+
+Credit would be appreciated but is not necessary.
+Looking forward to see what you create! [CC-0]
+
+Full CC0 text: https://creativecommons.org/publicdomain/zero/1.0/
+
+See also: fourSeasonsPlatformer_READ_ME.txt (readme shipped with the pack)
