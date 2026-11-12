@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dltbapo0l2mnt" path="res://Assets/Map/Tileset/Dungeon_Tileset.png" id="2_nh8lg"]
 [ext_resource type="Texture2D" uid="uid://b15ccb2uobqgx" path="res://Assets/Map/Tileset/dungeon_.png" id="3_gycy0"]
 [ext_resource type="Texture2D" uid="uid://hruflyko6hwm" path="res://Assets/Map/Textures/Background/background_black.png" id="5_0rni8"]
+[ext_resource type="Script" uid="uid://c2flela80vkh0" path="res://Levels/LaberinthGenerator/camera_controller.gd" id="6_icy6d"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nh8lg"]
 
@@ -478,6 +479,7 @@ texture = ExtResource("5_0rni8")
 tile_set = SubResource("TileSet_biqq7")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=837250391]
+script = ExtResource("6_icy6d")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=590556979]
 color = Color(0, 0, 0, 1)

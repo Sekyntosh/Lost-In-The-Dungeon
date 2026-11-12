@@ -4,10 +4,12 @@ extends CharacterBody2D
 
 var _moving: bool = false
 var _maze: Node2D = null
+var tween: Tween = null
 var _buffered_dir: Vector2i = Vector2i.ZERO
 
 
 func _ready() -> void:
+	RunManager.world_loading_started.connect(stop_motion_if_loading)
 	call_deferred("_setup")
 	add_to_group("player")
 
@@ -69,7 +71,7 @@ func slide(dir: Vector2i) -> void:
 
 	_moving = true
 	_buffered_dir = Vector2i.ZERO
-	var tween := create_tween()
+	tween = create_tween()
 	var from := global_position
 	for step in path:
 		var to: Vector2 = _maze.cell_to_world(step)
@@ -83,3 +85,13 @@ func slide(dir: Vector2i) -> void:
 		var next_dir := _buffered_dir
 		_buffered_dir = Vector2i.ZERO
 		slide(next_dir)
+		
+		
+func stop_motion_if_loading() -> void:
+	if RunManager._transitioning:
+		_buffered_dir = Vector2i.ZERO
+		if tween != null and tween.is_valid():
+			tween.kill()
+		tween = null
+		_moving = false
+		return

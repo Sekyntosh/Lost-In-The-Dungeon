@@ -16,6 +16,11 @@ var start_cell: Vector2i = Vector2i.ZERO
 
 ## An end cell picked randomly
 var end_cell: Vector2i = Vector2i.ZERO
+var old_end: Vector2i = Vector2i.ZERO
+
+## Reused across stages
+var _player_start: Marker2D = null
+var _level_end: Area2D = null
 
 
 func _ready() -> void:
@@ -80,7 +85,7 @@ func make_grid(width: int, height: int, fill_value: int) -> Array:
 
 
 func build_room() -> void:
-	# Base 21 so stage 1 is already a real maze; +2 per stage keeps size odd.
+	# Base 21 so stage 1 is already a real maze, this comment really sucks.
 	var laberinth_size := 21 + (stage - 1) * 2
 	if laberinth_size % 2 == 0:
 		laberinth_size += 1
@@ -117,6 +122,7 @@ func carve_maze() -> void:
 	]
 
 	# Odd coords only (room cells). Four corners = random "side" to start from.
+	# In my defense, it was the best idea at the time.
 	var corners: Array[Vector2i] = [
 		Vector2i(1, 1),
 		Vector2i(width - 2, 1),
@@ -128,9 +134,14 @@ func carve_maze() -> void:
 	#pick end cell
 	end_cell = corners[randi() % corners.size()]
 	
-	if end_cell == start_cell:
+	# If the start and end cells are the same, re-roll.
+	# A hack to avoid the player starting and ending in the same place.
+	# It's a hack, but it works.
+
+	while end_cell == start_cell:
 		end_cell = corners[randi() % corners.size()]
 		print_debug("cells matched, re-rolling! :D")
+
 	
 	grid[start_cell.y][start_cell.x] = 0
 	var stack: Array[Vector2i] = [start_cell]
@@ -177,19 +188,16 @@ func fit_background_to_room() -> void:
 	background.scale = Vector2(1, 1)
 
 func set_player_spawn_point() -> void:
-	var player_spawn_point_instance: Marker2D = player_spawn_point.instantiate()
-	add_child(player_spawn_point_instance)
-	player_spawn_point_instance.global_position = cell_to_world(start_cell)
-	player_spawn_point_instance.spawn_player()
-	
+	if _player_start == null:
+		_player_start = player_spawn_point.instantiate()
+		add_child(_player_start)
+	_player_start.global_position = cell_to_world(start_cell)
+	_player_start.spawn_player()
+
+
 func set_level_end() -> void:
-	var existing := get_tree().get_first_node_in_group("level_end") as Area2D
-	if existing != null:
-		existing.global_position = cell_to_world(end_cell)
-		return
-		
-	var level_end_area: Area2D = level_end.instantiate()
-	level_end_area.add_to_group("level_end")
-	add_child(level_end_area)
-	level_end_area.global_position = cell_to_world(end_cell)
-	
+	if _level_end == null:
+		_level_end = level_end.instantiate()
+		_level_end.add_to_group("level_end")
+		add_child(_level_end)
+	_level_end.global_position = cell_to_world(end_cell)

@@ -6,10 +6,6 @@ extends Marker2D
 ## Spawns the player at this node's global position.
 ## Returns the player instance (or null if player_scene is missing).
 
-func singleton_behaviour() -> void:
-	pass
-
-
 func spawn_player(parent: Node = null) -> Node2D:
 	var existing := get_tree().get_first_node_in_group("player") as Node2D
 	if existing != null:
